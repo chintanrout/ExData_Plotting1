@@ -1,23 +1,9 @@
-temp <- tempfile()
-download.file("https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip",temp)
-power <- read.table(unz(temp,"household_power_consumption.txt"), 
-                    sep=";", 
-                    header = T, 
-                    na="?", 
-                    colClasses = c("character",
-                                   'character',
-                                   'numeric',
-                                   'numeric',
-                                   'numeric',
-                                   'numeric',
-                                   'numeric',
-                                   'numeric',
-                                   'numeric'))
-
-unlink(temp)
-power <- power[which(power$Date == '2/2/2007' | power$Date=='1/2/2007'),]
-
-power$POSIX <-as.POSIXlt.character(paste(power$Date,power$Time),format = "%d/%m/%Y %H:%M:%S")
+data_full <- read.csv("household_power_consumption.txt", header=T, sep=';', na.strings="?", 
+                      nrows=2075259, check.names=F, stringsAsFactors=F, comment.char="", quote='\"')
+data1 <- subset(data_full, Date %in% c("1/2/2007","2/2/2007"))
+data1$Date <- as.Date(data1$Date, format="%d/%m/%Y")
+datetime <- paste(as.Date(data1$Date), data1$Time)
+data1$Datetime <- as.POSIXct(datetime)
 
 
 #plot3
